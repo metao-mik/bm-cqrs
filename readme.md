@@ -21,3 +21,9 @@
 * Repository mit Github verbunden
 * readme.md und .gitignore
 * Commit+Push
+* `dotnet new mstest -n Tests`
+* csproj Datei editiert, um watcher hinzuzufügen
+* Folgend im Projektverzeichnis
+* `dotnet restore`
+* Testweise fehlschlagenden Test geschrieben
+* `dotnet watch test`

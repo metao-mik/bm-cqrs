@@ -1,6 +1,6 @@
 using System;
 
-namespace Billmorro.Infrastruktur
+namespace Billmorro.Infrastruktur.Eventsourcing
 {
     public sealed class EventEnvelope
     {

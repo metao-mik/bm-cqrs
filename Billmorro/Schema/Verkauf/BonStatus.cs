@@ -1,4 +1,4 @@
-namespace Billmorro.Implementierung
+namespace Billmorro.Schema.Verkauf
 {
     public enum BonStatus
     {

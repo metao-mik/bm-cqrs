@@ -1,5 +1,6 @@
 using System;
 using Billmorro.Infrastruktur;
+using Billmorro.Infrastruktur.CommandSide;
 
 namespace Billmorro.ModulApi.Verkauf
 {

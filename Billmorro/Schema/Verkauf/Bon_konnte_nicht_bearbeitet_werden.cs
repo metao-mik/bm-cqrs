@@ -1,5 +1,6 @@
 ﻿using System;
 using Billmorro.Infrastruktur;
+using Billmorro.Infrastruktur.Eventsourcing;
 
 namespace Billmorro.Schema.Verkauf
 {

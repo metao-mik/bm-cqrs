@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Billmorro.Infrastruktur.CommandSide;
+using Billmorro.Infrastruktur.Eventsourcing;
 
-namespace Billmorro.Infrastruktur
+namespace Billmorro.Infrastruktur.Implementierung
 {
     public class EventSourced_UnitOfWork : UnitOfWork
     {

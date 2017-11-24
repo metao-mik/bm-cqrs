@@ -1,4 +1,4 @@
-﻿namespace Billmorro.Infrastruktur
+﻿namespace Billmorro.Infrastruktur.Eventsourcing
 {
     public interface Event
     {

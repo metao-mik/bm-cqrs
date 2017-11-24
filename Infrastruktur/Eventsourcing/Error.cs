@@ -1,4 +1,5 @@
 ﻿using System;
+using Billmorro.Infrastruktur.Eventsourcing;
 
 namespace Billmorro.Infrastruktur
 {

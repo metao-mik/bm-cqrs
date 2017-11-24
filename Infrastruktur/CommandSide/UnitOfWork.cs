@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Billmorro.Infrastruktur.Eventsourcing;
 
-namespace Billmorro.Infrastruktur
+namespace Billmorro.Infrastruktur.CommandSide
 {
     public interface UnitOfWork
     {

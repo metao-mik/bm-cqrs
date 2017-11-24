@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Billmorro.Infrastruktur
+namespace Billmorro.Infrastruktur.Eventsourcing
 {
     public interface EventStore
     {

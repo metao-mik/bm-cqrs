@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Billmorro.Infrastruktur.Eventsourcing;
 
-namespace Billmorro.Infrastruktur
+namespace Billmorro.Infrastruktur.Implementierung
 {
     public class InMemoryEventStore : EventStore
     {

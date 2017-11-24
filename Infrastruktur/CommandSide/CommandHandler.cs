@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Billmorro.Infrastruktur.Eventsourcing;
+using Billmorro.Infrastruktur.Implementierung;
 
-namespace Billmorro.Infrastruktur
+namespace Billmorro.Infrastruktur.CommandSide
 {
     public abstract class CommandHandler
     {

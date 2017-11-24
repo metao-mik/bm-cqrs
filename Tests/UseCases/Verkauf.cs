@@ -2,6 +2,8 @@ using System;
 using Billmorro.ModulApi.Verkauf;
 using Billmorro.Implementierung;
 using Billmorro.Infrastruktur;
+using Billmorro.Infrastruktur.CommandSide;
+using Billmorro.Infrastruktur.Implementierung;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Billmorro.Tests.UseCases

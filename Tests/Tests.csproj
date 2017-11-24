@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <RootNamespace>BillMorro.Tests</RootNamespace>
+    <RootNamespace>Billmorro.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BillMorro\BillMorro.csproj" />
+    <ProjectReference Include="..\BillMorro\Billmorro.csproj" />
     <ProjectReference Include="..\Infrastruktur\Infrastruktur.csproj" />
   </ItemGroup>
 

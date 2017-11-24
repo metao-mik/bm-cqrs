@@ -1,10 +1,10 @@
 using System;
-using BillMorro.API.Verkauf;
-using BillMorro.Implementierung;
-using BillMorro.Infrastruktur;
+using Billmorro.ModulApi.Verkauf;
+using Billmorro.Implementierung;
+using Billmorro.Infrastruktur;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace BillMorro.Tests.UseCases
+namespace Billmorro.Tests.UseCases
 {
     [TestClass]
     public class Verkauf_einer_Schachtel_Zigaretten
@@ -29,20 +29,21 @@ namespace BillMorro.Tests.UseCases
         [TestInitialize]
         public void Setup()
         {
-            _commandhandler = new VerkaufCommandHandler();
+            var eventstore = new InMemoryEventStore(()=>DateTime.UtcNow);
+            _commandhandler = new VerkaufCommandHandler(eventstore);
             _bon = Guid.NewGuid(); // TODO: in Orchestrierung auslagern
         }
 
         private void PositionHinzufuegen(Guid artikel, int menge, decimal betrag)
         {
-          var cmd =  new Position_zu_Bon_hinzufuegen(_bon, artikel, menge, betrag);
+          var cmd =  new Position_zu_Bon_hinzufuegen(_bon, Guid.NewGuid(), artikel, menge, betrag);
           Execute(cmd);
         }
 
         // Option: 
         // mehrere Commands ausführen als Transaktion, 
         // Meta-Daten an der Transaktion (user Session etc)
-        private void Execute(ICommand cmd)
+        private void Execute(Command cmd)
         {
             _commandhandler.Execute(cmd);
         }

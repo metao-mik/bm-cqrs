@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>BillMorro.Infrastruktur</RootNamespace>
+    <RootNamespace>Billmorro.Infrastruktur</RootNamespace>
   </PropertyGroup>
 
 </Project>

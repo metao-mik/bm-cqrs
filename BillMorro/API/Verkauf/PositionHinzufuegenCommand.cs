@@ -1,9 +1,9 @@
 using System;
 using BillMorro.Infrastruktur;
 
-namespace BillMorro.Tests.UseCases
+namespace BillMorro.API.Verkauf
 {
-    internal class PositionHinzufuegenCommand : ICommand
+    public class PositionHinzufuegenCommand : ICommand
     {
         private Guid artikelZigarettenId;
         private decimal testBetrag;

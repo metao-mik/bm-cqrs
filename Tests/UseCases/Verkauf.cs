@@ -1,4 +1,6 @@
 using System;
+using BillMorro.API.Verkauf;
+using BillMorro.Implementierung;
 using BillMorro.Infrastruktur;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

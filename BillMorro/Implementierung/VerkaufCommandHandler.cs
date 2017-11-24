@@ -1,9 +1,10 @@
 using System;
+using BillMorro.API.Verkauf;
 using BillMorro.Infrastruktur;
 
-namespace BillMorro.Tests.UseCases
+namespace BillMorro.Implementierung
 {
-    internal class VerkaufCommandHandler : CommandHandler
+    public class VerkaufCommandHandler : CommandHandler
     {
         public VerkaufCommandHandler(Func<Guid, Guid> tablet_zu_bon_repository)
         {

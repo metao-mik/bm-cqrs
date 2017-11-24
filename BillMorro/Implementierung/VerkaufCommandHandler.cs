@@ -16,12 +16,12 @@ namespace Billmorro.Implementierung
 
         private void Handle(Position_zu_Bon_hinzufuegen cmd, UnitOfWork uow)
         {
-            if (Boneigenschaften.Status.Project(uow.History(cmd.Bon)) == BonStatus.Unbekannt)
+            if (Bon.Status.Project(uow.History(cmd.Bon)) == BonStatus.Unbekannt)
             {
                 uow.AddEvent(cmd.Bon, new Bon_wurde_eroeffnet(cmd.Bon));
             }
 
-            if (Boneigenschaften.Status.Project(uow.History(cmd.Bon)) == BonStatus.Offen)
+            if (Bon.Status.Project(uow.History(cmd.Bon)) == BonStatus.Offen)
             {
                 uow.AddEvent(cmd.Bon, new Position_wurde_zu_Bon_hinzugefuegt(cmd.Bon, cmd.Position, cmd.Artikel, cmd.Menge, cmd.Betrag));
             }
@@ -29,7 +29,7 @@ namespace Billmorro.Implementierung
             {
                 // Fachliche Fehler: die Exception "Error" bricht die Transaktion ab, enthält ein Event, dass ggf. statt des Transaktionsewrgebnisses veröffentlicht werden kann (nicht implementiert, s. CommandHandler).
                 // Falls der Fehler nicht fatal ist, kann auch das Event einfach so zur Uow hinzugefügt werden.
-                throw new Error(new Bon_konnte_nicht_bearbeitet_werden(cmd.Bon, $"Die Position kann nicht hinzugefügt werden, da der Bon im Status '{Boneigenschaften.Status.Project(uow.History(cmd.Bon))}' ist."));
+                throw new Error(new Bon_konnte_nicht_bearbeitet_werden(cmd.Bon, $"Die Position kann nicht hinzugefügt werden, da der Bon im Status '{Bon.Status.Project(uow.History(cmd.Bon))}' ist."));
             }
         }
     }

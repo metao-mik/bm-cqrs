@@ -11,5 +11,7 @@ namespace Billmorro.ModulApi.Geraete
             _bonid = _bonid ?? BonId.Neu;
             return _bonid.Value;
         }
+
+        public BonId? Aktueller_Bon => _bonid;
     }
 }

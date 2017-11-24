@@ -1,11 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Billmorro.Implementierung;
 using Billmorro.Infrastruktur.Reactive;
+using Billmorro.ModulApi.Geraete;
+using Billmorro.Schema.Verkauf;
 
 namespace Billmorro.ClientApi.Kasse
 {
     public class KasseQueryApi
     {
+        public KasseQueryApi(VerkaufQuery verkaufreadmodel, Geraetemodul geraete)
+        {
+            verkaufreadmodel.Changes.Subscribe(_ =>
+            {
+                var bonid = geraete.Aktueller_Bon;
+                var bon =
+                    bonid.HasValue
+                        ? Map(verkaufreadmodel.GetBon(bonid.Value))
+                        : LeererBon ;
+                _aktuellerBon.Next(bon);
+            });
+        }
+
+        private Bonposition Map(Billmorro.Schema.Verkauf.Bonposition src)
+        {
+            return new Bonposition
+            {
+                Bezeichnung = src.Artikel.ToString(),
+                Menge = src.Menge,
+                Positionspreis = src.Positionspreis,
+                Steuersatz = "19%"
+            };
+        }
+
+        private Bon Map(BonReadmodel src)
+        {
+            return new Bon
+            {
+                NettoBetrag = src.NettoBetrag,
+                BruttoBetrag = src.BruttoBetrag,
+                Positionen = src.Positionen.Select(Map).ToList()
+            };
+        }
+
+        private Bon LeererBon => new Bon{ Positionen = new List<Bonposition>()};
+
         private readonly Subject<Bon> _aktuellerBon = new Subject<Bon>();
         public IObservable<Bon> AktuellerBon => _aktuellerBon;
     }

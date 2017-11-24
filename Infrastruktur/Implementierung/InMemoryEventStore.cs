@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Billmorro.Infrastruktur.Eventsourcing;
+using Billmorro.Infrastruktur.Reactive;
 
 namespace Billmorro.Infrastruktur.Implementierung
 {
@@ -11,6 +12,10 @@ namespace Billmorro.Infrastruktur.Implementierung
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         private readonly List<EventEnvelope> _storage = new List<EventEnvelope>();
         private readonly Func<DateTime> _clock;
+
+        private int _letztes_eventset = 0;
+        private readonly Subject<int> _eventsets = new Subject<int>();
+        public IObservable<int> Eventsets => _eventsets;
 
         public InMemoryEventStore(Func<DateTime> clock)
         {
@@ -32,9 +37,12 @@ namespace Billmorro.Infrastruktur.Implementierung
 
         public void Publish(List<UncommittedEvent> uncommittedEvents)
         {
+            int eventsetid;
             _lock.EnterWriteLock();
             try
             {
+                _letztes_eventset = _letztes_eventset + 1;
+                eventsetid = _letztes_eventset;
                 foreach (var @event in uncommittedEvents)
                 {
                     Console.Out.WriteLine(@event.Event);
@@ -45,6 +53,9 @@ namespace Billmorro.Infrastruktur.Implementierung
             {
                 _lock.ExitWriteLock();
             }
+
+            // Synchron: eigentlich neuer Thread aus Threadpool.
+            _eventsets.Next(eventsetid);
         }
     }
 }

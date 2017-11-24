@@ -10,6 +10,7 @@ using Billmorro.ModulApi.Geraete;
 using Billmorro.Schema.Produkte;
 using Billmorro.Schema.Verkauf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Bon = Billmorro.ClientApi.Kasse.Bon;
 
 namespace Billmorro.Tests.UseCases
 {
@@ -55,14 +56,15 @@ namespace Billmorro.Tests.UseCases
         {
             var eventstore = new InMemoryEventStore(() => DateTime.UtcNow);
 
+            var geraete = new Geraetemodul();
             _clientapi = new KasseClientApi(
                 new ModulApi.Produkte.Produktmodul(),
-                new Geraetemodul(),
+                geraete,
                     new VerkaufCommandHandler(eventstore,
                         ex => { throw new Exception("Fehler in Testausführung: " + ex.Message, ex); })
                 );
 
-            _queryapi = new KasseQueryApi();
+            _queryapi = new KasseQueryApi(new VerkaufQuery(eventstore), geraete);
 
             _aktuellerBon = null;
             _queryapi.AktuellerBon.Subscribe(bon => _aktuellerBon = bon);

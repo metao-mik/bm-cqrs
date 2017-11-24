@@ -4,6 +4,8 @@ using Billmorro.Implementierung;
 using Billmorro.Infrastruktur;
 using Billmorro.Infrastruktur.CommandSide;
 using Billmorro.Infrastruktur.Implementierung;
+using Billmorro.Schema.Produkte;
+using Billmorro.Schema.Verkauf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Billmorro.Tests.UseCases
@@ -12,16 +14,16 @@ namespace Billmorro.Tests.UseCases
     public class Verkauf_einer_Schachtel_Zigaretten
     {
 
-        private static readonly decimal TestBetrag = 8.14m;
-        private static readonly int TestMenge = 1;
-        private static readonly Guid ArtikelZigarettenId = Guid.NewGuid();
+        private static readonly decimal Betrag_8_Euro_14 = 8.14m;
+        private static readonly int Menge_1 = 1;
+        private static readonly ArtikelId ArtikelZigarettenId = ArtikelId.Neu;
         private CommandHandler _commandhandler;
-        private Guid _bon; // TODO: in Orchestrierung auslagern
+        private BonId _bon; // TODO: in Orchestrierung auslagern
 
         [TestMethod]
         public void Hinzufuegen_einer_Position()
         {
-          PositionHinzufuegen(ArtikelZigarettenId, TestMenge, TestBetrag);
+          PositionHinzufuegen(ArtikelZigarettenId, Menge_1, Betrag_8_Euro_14);
 
           Erwartung__Der_Bon_ist_aktuell();
           Erwartung__Der_Bon_hat_eine_Position();
@@ -34,12 +36,12 @@ namespace Billmorro.Tests.UseCases
             var eventstore = new InMemoryEventStore(()=>DateTime.UtcNow);
             _commandhandler = new VerkaufCommandHandler(eventstore,
                 ex => { throw new Exception("Fehler in Testausführung: " + ex.Message, ex); });
-            _bon = Guid.NewGuid(); // TODO: in Orchestrierung auslagern
+            _bon = BonId.Neu; // TODO: in Orchestrierung auslagern
         }
 
-        private void PositionHinzufuegen(Guid artikel, int menge, decimal betrag)
+        private void PositionHinzufuegen(ArtikelId artikel, int menge, decimal betrag)
         {
-          var cmd =  new Position_zu_Bon_hinzufuegen(_bon, Guid.NewGuid(), artikel, menge, betrag);
+          var cmd =  new Position_zu_Bon_hinzufuegen(_bon, PositionId.Neu, artikel, menge, betrag);
           Execute(cmd);
         }
 

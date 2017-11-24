@@ -6,9 +6,9 @@ namespace Billmorro.Schema.Verkauf
 {
     public class Bon_wurde_eroeffnet : Event
     {
-        public readonly Guid Bon;
+        public readonly BonId Bon;
 
-        public Bon_wurde_eroeffnet(Guid bon)
+        public Bon_wurde_eroeffnet(BonId bon)
         {
             Bon = bon;
         }

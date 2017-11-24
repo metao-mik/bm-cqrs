@@ -7,10 +7,10 @@ namespace Billmorro.Schema.Verkauf
     [Serializable] // Bestandteil einer Exception
     public class Bon_konnte_nicht_bearbeitet_werden : Event
     {
-        public readonly Guid Bon;
+        public readonly BonId Bon;
         public readonly string Reason;
 
-        public Bon_konnte_nicht_bearbeitet_werden(Guid bon, string reason)
+        public Bon_konnte_nicht_bearbeitet_werden(BonId bon, string reason)
         {
             Bon = bon;
             Reason = reason;

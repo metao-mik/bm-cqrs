@@ -1,18 +1,17 @@
-﻿using System;
-using Billmorro.Infrastruktur;
-using Billmorro.Infrastruktur.Eventsourcing;
+﻿using Billmorro.Infrastruktur.Eventsourcing;
+using Billmorro.Schema.Produkte;
 
 namespace Billmorro.Schema.Verkauf
 {
     public class Position_wurde_zu_Bon_hinzugefuegt : Event
     {
-        public readonly Guid Bon; // TODO: Guids durch Struct ersetzen
-        public readonly Guid Artikel;
-        public readonly Guid Position;
+        public readonly BonId Bon;
+        public readonly ArtikelId Artikel;
+        public readonly PositionId Position;
         public readonly decimal Betrag;
         public readonly int Menge;
 
-        public Position_wurde_zu_Bon_hinzugefuegt(Guid bon, Guid position, Guid artikel, int menge, decimal betrag)
+        public Position_wurde_zu_Bon_hinzugefuegt(BonId bon, PositionId position, ArtikelId artikel, int menge, decimal betrag)
         {
             Bon = bon;
             Artikel = artikel;

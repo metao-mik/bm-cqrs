@@ -6,13 +6,12 @@ namespace BillMorro.Implementierung
 {
     public class VerkaufCommandHandler : CommandHandler
     {
-        public VerkaufCommandHandler(Func<Guid, Guid> tablet_zu_bon_repository)
+        public VerkaufCommandHandler()
         {
-
-            Register_Command<PositionHinzufuegenCommand>(Handle);
+            Register_Command<Position_zu_Bon_hinzufuegen>(Handle);
         }
 
-        private void Handle(PositionHinzufuegenCommand cmd)
+        private void Handle(Position_zu_Bon_hinzufuegen cmd)
         {
             throw new NotImplementedException();
         }

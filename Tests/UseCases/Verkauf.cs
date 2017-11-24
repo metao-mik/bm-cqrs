@@ -11,13 +11,15 @@ namespace BillMorro.Tests.UseCases
     {
 
         private static readonly decimal TestBetrag = 8.14m;
+        private static readonly int TestMenge = 1;
         private static readonly Guid ArtikelZigarettenId = Guid.NewGuid();
         private CommandHandler _commandhandler;
+        private Guid _bon; // TODO: in Orchestrierung auslagern
 
         [TestMethod]
         public void Hinzufuegen_einer_Position()
         {
-          PositionHinzufuegen(ArtikelZigarettenId, TestBetrag);
+          PositionHinzufuegen(ArtikelZigarettenId, TestMenge, TestBetrag);
 
           Erwartung__Der_Bon_ist_aktuell();
           Erwartung__Der_Bon_hat_eine_Position();
@@ -27,13 +29,13 @@ namespace BillMorro.Tests.UseCases
         [TestInitialize]
         public void Setup()
         {
-            var bon = Guid.NewGuid();
-            _commandhandler = new VerkaufCommandHandler(_=>bon);
+            _commandhandler = new VerkaufCommandHandler();
+            _bon = Guid.NewGuid(); // TODO: in Orchestrierung auslagern
         }
 
-        private void PositionHinzufuegen(Guid ArtikelZigarettenId, decimal testBetrag)
+        private void PositionHinzufuegen(Guid artikel, int menge, decimal betrag)
         {
-          var cmd =  new PositionHinzufuegenCommand(ArtikelZigarettenId, testBetrag);
+          var cmd =  new Position_zu_Bon_hinzufuegen(_bon, artikel, menge, betrag);
           Execute(cmd);
         }
 

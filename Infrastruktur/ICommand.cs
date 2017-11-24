@@ -1,4 +1,5 @@
-namespace Tests {
+namespace Tests
+{
     public interface ICommand
     {
     }

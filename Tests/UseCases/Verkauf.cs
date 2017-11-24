@@ -22,8 +22,10 @@ namespace Tests
 
 
         [TestInitialize]
-        public void Setup(){
-            _commandhandler = new VerkaufCommandHandler();
+        public void Setup()
+        {
+            var bon = Guid.NewGuid();
+            _commandhandler = new VerkaufCommandHandler(_=>bon);
         }
 
         private void PositionHinzufuegen(Guid ArtikelZigarettenId, decimal testBetrag)

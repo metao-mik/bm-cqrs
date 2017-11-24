@@ -5,6 +5,7 @@ using Billmorro.Implementierung;
 using Billmorro.Infrastruktur;
 using Billmorro.Infrastruktur.CommandSide;
 using Billmorro.Infrastruktur.Implementierung;
+using Billmorro.Infrastruktur.Reactive;
 using Billmorro.ModulApi.Geraete;
 using Billmorro.Schema.Produkte;
 using Billmorro.Schema.Verkauf;
@@ -20,23 +21,26 @@ namespace Billmorro.Tests.UseCases
         private static readonly int Menge_1 = 1;
         private static readonly ArtikelId ArtikelZigarettenId = ArtikelId.Neu;
         private KasseClientApi _clientapi;
+        private KasseQueryApi _queryapi;
 
         [TestMethod]
         public void Hinzufuegen_einer_Position()
         {
           PositionHinzufuegen(ArtikelZigarettenId, Menge_1, Betrag_8_Euro_14);
 
-          Erwartung__Der_Bon_ist_aktuell();
+          //Erwartung__Der_Bon_ist_aktuell();
           Erwartung__Der_Bon_hat_eine_Position();
         }
 
         private static readonly string Barcode_12345 = "12345";
+        private Bon _aktuellerBon;
+
         [TestMethod]
         public void Hinzufuegen_eines_Barcodes()
         {
             BarcodeHinzufuegen(Barcode_12345);
 
-            Erwartung__Der_Bon_ist_aktuell();
+            //Erwartung__Der_Bon_ist_aktuell();
             Erwartung__Der_Bon_hat_eine_Position();
         }
 
@@ -57,6 +61,11 @@ namespace Billmorro.Tests.UseCases
                     new VerkaufCommandHandler(eventstore,
                         ex => { throw new Exception("Fehler in Testausführung: " + ex.Message, ex); })
                 );
+
+            _queryapi = new KasseQueryApi();
+
+            _aktuellerBon = null;
+            _queryapi.AktuellerBon.Subscribe(bon => _aktuellerBon = bon);
         }
 
         private void PositionHinzufuegen(ArtikelId artikel, int menge, decimal betrag)
@@ -66,14 +75,15 @@ namespace Billmorro.Tests.UseCases
 
         private void Erwartung__Der_Bon_hat_eine_Position()
         {
-            throw new NotImplementedException();
+            Assert.IsNotNull(_aktuellerBon, "Es wurde ein aktueller Bon erwartet.");
+            Assert.AreEqual(1, _aktuellerBon?.Positionen?.Count ?? 0, "Es wurde eine Bonposition erwartet");
         }
 
 
-        private void Erwartung__Der_Bon_ist_aktuell()
-        {
-          throw new NotImplementedException();
-        }
+        //private void Erwartung__Der_Bon_ist_aktuell()
+        //{
+            
+        //}
     }
 
 }

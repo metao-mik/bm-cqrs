@@ -1,9 +1,11 @@
 using System;
+using Billmorro.ClientApi.Kasse;
 using Billmorro.ModulApi.Verkauf;
 using Billmorro.Implementierung;
 using Billmorro.Infrastruktur;
 using Billmorro.Infrastruktur.CommandSide;
 using Billmorro.Infrastruktur.Implementierung;
+using Billmorro.ModulApi.Geraete;
 using Billmorro.Schema.Produkte;
 using Billmorro.Schema.Verkauf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,8 +19,7 @@ namespace Billmorro.Tests.UseCases
         private static readonly decimal Betrag_8_Euro_14 = 8.14m;
         private static readonly int Menge_1 = 1;
         private static readonly ArtikelId ArtikelZigarettenId = ArtikelId.Neu;
-        private CommandHandler _commandhandler;
-        private BonId _bon; // TODO: in Orchestrierung auslagern
+        private KasseClientApi _clientapi;
 
         [TestMethod]
         public void Hinzufuegen_einer_Position()
@@ -29,28 +30,38 @@ namespace Billmorro.Tests.UseCases
           Erwartung__Der_Bon_hat_eine_Position();
         }
 
+        private static readonly string Barcode_12345 = "12345";
+        [TestMethod]
+        public void Hinzufuegen_eines_Barcodes()
+        {
+            BarcodeHinzufuegen(Barcode_12345);
+
+            Erwartung__Der_Bon_ist_aktuell();
+            Erwartung__Der_Bon_hat_eine_Position();
+        }
+
+        private void BarcodeHinzufuegen(string barcode)
+        {
+            _clientapi.Hinzufuegen_Barcode(barcode);
+        }
+
 
         [TestInitialize]
         public void Setup()
         {
-            var eventstore = new InMemoryEventStore(()=>DateTime.UtcNow);
-            _commandhandler = new VerkaufCommandHandler(eventstore,
-                ex => { throw new Exception("Fehler in Testausführung: " + ex.Message, ex); });
-            _bon = BonId.Neu; // TODO: in Orchestrierung auslagern
+            var eventstore = new InMemoryEventStore(() => DateTime.UtcNow);
+
+            _clientapi = new KasseClientApi(
+                new ModulApi.Produkte.Produktmodul(),
+                new Geraetemodul(),
+                    new VerkaufCommandHandler(eventstore,
+                        ex => { throw new Exception("Fehler in Testausführung: " + ex.Message, ex); })
+                );
         }
 
         private void PositionHinzufuegen(ArtikelId artikel, int menge, decimal betrag)
         {
-          var cmd =  new Position_zu_Bon_hinzufuegen(_bon, PositionId.Neu, artikel, menge, betrag);
-          Execute(cmd);
-        }
-
-        // Option: 
-        // mehrere Commands ausführen als Transaktion, 
-        // Meta-Daten an der Transaktion (user Session etc)
-        private void Execute(Command cmd)
-        {
-            _commandhandler.Execute(cmd);
+            _clientapi.Hinzufuegen_Position(artikel,menge,betrag);
         }
 
         private void Erwartung__Der_Bon_hat_eine_Position()

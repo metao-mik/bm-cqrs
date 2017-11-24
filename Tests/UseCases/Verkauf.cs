@@ -1,7 +1,8 @@
 using System;
+using BillMorro.Infrastruktur;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Tests
+namespace BillMorro.Tests.UseCases
 {
     [TestClass]
     public class Verkauf_einer_Schachtel_Zigaretten

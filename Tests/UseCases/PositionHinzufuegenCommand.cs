@@ -1,6 +1,7 @@
 using System;
+using BillMorro.Infrastruktur;
 
-namespace Tests
+namespace BillMorro.Tests.UseCases
 {
     internal class PositionHinzufuegenCommand : ICommand
     {

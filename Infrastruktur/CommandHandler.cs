@@ -7,11 +7,13 @@ namespace Billmorro.Infrastruktur
     {
 
         private readonly EventStore _eventstore;
+        private readonly Action<Exception> _onError;
         private readonly Dictionary<Type,Action<Command, UnitOfWork>> _commandhandlers = new Dictionary<Type,Action<Command, UnitOfWork>>();
 
-        protected CommandHandler(EventStore eventstore)
+        protected CommandHandler(EventStore eventstore, Action<Exception> on_error)
         {
             _eventstore = eventstore;
+            _onError = on_error;
         }
 
         protected void Register_Command<TCommand>(Action<TCommand, UnitOfWork> handler){
@@ -22,12 +24,26 @@ namespace Billmorro.Infrastruktur
         {
             var uow = new EventSourced_UnitOfWork(_eventstore);
 
-            foreach (var command in commands)
+            try
             {
-                _commandhandlers[command.GetType()](command, uow);
+                foreach (var command in commands)
+                {
+                    _commandhandlers[command.GetType()](command, uow);
+                }
+
+                uow.Commit();
+            }
+            catch (Error error)
+            {
+                Console.WriteLine($"Ein Vorgang konnte nicht ausgeführt werden: {error.Message}.");
+                //uow.Commit(error.Details); -- error.Details ist ein Event, dass ggf. persistiert und veröffentlicht werden kann.
             }
 
-            uow.Commit();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ein Fehler ist aufgetreten: {ex.Message}.");
+                _onError(ex);
+            }
         }
 
 

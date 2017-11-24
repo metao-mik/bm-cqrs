@@ -30,7 +30,8 @@ namespace Billmorro.Tests.UseCases
         public void Setup()
         {
             var eventstore = new InMemoryEventStore(()=>DateTime.UtcNow);
-            _commandhandler = new VerkaufCommandHandler(eventstore);
+            _commandhandler = new VerkaufCommandHandler(eventstore,
+                ex => { throw new Exception("Fehler in Testausführung: " + ex.Message, ex); });
             _bon = Guid.NewGuid(); // TODO: in Orchestrierung auslagern
         }
 

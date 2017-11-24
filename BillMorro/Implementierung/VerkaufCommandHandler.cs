@@ -9,7 +9,7 @@ namespace Billmorro.Implementierung
 {
     public class VerkaufCommandHandler : CommandHandler
     {
-        public VerkaufCommandHandler(EventStore eventstore) : base(eventstore)
+        public VerkaufCommandHandler(EventStore eventstore, Action<Exception> on_error) : base(eventstore, on_error)
         {
             Register_Command<Position_zu_Bon_hinzufuegen>(Handle);
         }
@@ -27,6 +27,8 @@ namespace Billmorro.Implementierung
             }
             else
             {
+                // Fachliche Fehler: die Exception "Error" bricht die Transaktion ab, enthält ein Event, dass ggf. statt des Transaktionsewrgebnisses veröffentlicht werden kann (nicht implementiert, s. CommandHandler).
+                // Falls der Fehler nicht fatal ist, kann auch das Event einfach so zur Uow hinzugefügt werden.
                 throw new Error(new Bon_konnte_nicht_bearbeitet_werden(cmd.Bon, $"Die Position kann nicht hinzugefügt werden, da der Bon im Status '{Boneigenschaften.Status.Project(uow.History(cmd.Bon))}' ist."));
             }
         }

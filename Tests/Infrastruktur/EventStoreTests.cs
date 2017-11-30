@@ -17,14 +17,28 @@ namespace Billmorro.Tests.Infrastruktur
             return new InMemoryEventStore(() => _timestamp);
         }
 
+        protected override void Cleanup_SUT()
+        {
+        }
     }
 
     [TestClass]
     public sealed class EventStoreTests_Sqlite : EventStoreTests
     {
+        private string _databasefile;
+
         protected override EventStore Create_SUT()
         {
-            return new SqliteEventstore();
+            _databasefile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"sqlite-{Guid.NewGuid().ToString()}.db");
+            var sqliteEventstore = new SqliteEventstore(_databasefile);
+            sqliteEventstore.UpdateSchema();
+            return sqliteEventstore;
+
+        }
+
+        protected override void Cleanup_SUT()
+        {
+            //System.IO.File.Delete(_databasefile );
         }
 
     }
@@ -38,6 +52,12 @@ namespace Billmorro.Tests.Infrastruktur
         {
             _timestamp = DateTime.UtcNow;
             SUT = Create_SUT();
+        }
+
+        [TestCleanup]
+        public void Teardown()
+        {
+            Cleanup_SUT();
         }
 
         private IEnumerable<Eventset> Historie()
@@ -246,6 +266,8 @@ namespace Billmorro.Tests.Infrastruktur
 
             Assert.AreEqual(eventsetid0, eventsetid);
         }
+
+        protected abstract void Cleanup_SUT();
     }
 
     public struct TestEvent_Struct : Event

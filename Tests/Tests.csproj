@@ -20,7 +20,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BillMorro\Billmorro.csproj" />
+    <ProjectReference Include="..\Infrastruktur.Sqlite\Infrastruktur.Sqlite.csproj" />
     <ProjectReference Include="..\Infrastruktur\Infrastruktur.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Infrastruktur\" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{A4ECC19D-EF98-432B-A09E-83CA37A1169D}"
 EndProject
@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Billmorro", "BillMorro\Bill
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastruktur", "Infrastruktur\Infrastruktur.csproj", "{271E8895-4273-4B91-87C5-6217A8624D0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastruktur.Sqlite", "Infrastruktur.Sqlite\Infrastruktur.Sqlite.csproj", "{7422814F-62BB-47A1-B9AF-897FCDFB0C80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastruktur.Sqlite", "Infrastruktur.Sqlite\Infrastruktur.Sqlite.csproj", "{7422814F-62BB-47A1-B9AF-897FCDFB0C80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billmorro.Gui.Forms", "Billmorro.Gui.Forms\Billmorro.Gui.Forms.csproj", "{D5D105EE-7147-4A73-BEFD-ACB05CC0740C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{7422814F-62BB-47A1-B9AF-897FCDFB0C80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7422814F-62BB-47A1-B9AF-897FCDFB0C80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7422814F-62BB-47A1-B9AF-897FCDFB0C80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5D105EE-7147-4A73-BEFD-ACB05CC0740C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5D105EE-7147-4A73-BEFD-ACB05CC0740C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5D105EE-7147-4A73-BEFD-ACB05CC0740C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5D105EE-7147-4A73-BEFD-ACB05CC0740C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

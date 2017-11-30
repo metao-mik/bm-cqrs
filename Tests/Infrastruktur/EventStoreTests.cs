@@ -30,7 +30,7 @@ namespace Billmorro.Tests.Infrastruktur
         protected override EventStore Create_SUT()
         {
             _databasefile = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"sqlite-{Guid.NewGuid().ToString()}.db");
-            var sqliteEventstore = new SqliteEventstore(_databasefile);
+            var sqliteEventstore = new SqliteEventstore(_databasefile, new JsonEventSerializer().Register<TestEvent_Class_Property>(Guid.NewGuid()), ()=>_timestamp);
             sqliteEventstore.UpdateSchema();
             return sqliteEventstore;
 
@@ -38,9 +38,32 @@ namespace Billmorro.Tests.Infrastruktur
 
         protected override void Cleanup_SUT()
         {
-            //System.IO.File.Delete(_databasefile );
+            System.IO.File.Delete(_databasefile );
         }
 
+    }
+
+    public class JsonEventSerializer : Serializer
+    {
+        private readonly Dictionary<Guid, Func<string, Event>> _deserializers = new Dictionary<Guid, Func<string, Event>>();
+        private readonly Dictionary<Type, Func<Event, (Guid,string)>> _serializers = new Dictionary<Type, Func<Event, (Guid, string)>>();
+
+        public (Guid typeid, string blob) Serialize(Event @event)
+        {
+            return _serializers[@event.GetType()](@event);
+        }
+
+        public Event Deserialize(Guid typeid, string blob)
+        {
+            return _deserializers[typeid](blob);
+        }
+
+        public JsonEventSerializer Register<TEvent>(Guid typecode) where TEvent:Event
+        {
+            _serializers.Add(typeof(TEvent), e => (typecode, Newtonsoft.Json.JsonConvert.SerializeObject(e)));
+            _deserializers.Add(typecode, s => Newtonsoft.Json.JsonConvert.DeserializeObject<TEvent>(s));
+            return this;
+        }
     }
 
     public abstract class EventStoreTests
@@ -104,7 +127,7 @@ namespace Billmorro.Tests.Infrastruktur
             return _timestamp;
         }
 
-        private Event CreateEvent() => new TestEvent_Struct(Guid.NewGuid().ToString());
+        private Event CreateEvent() => new TestEvent_Class_Property(Guid.NewGuid().ToString());
         private Guid CreateStream() => Guid.NewGuid();
 
         
@@ -187,8 +210,8 @@ namespace Billmorro.Tests.Infrastruktur
             var eventset = history.Single();
             Assert.AreEqual(1, eventset.Id);
             Assert.AreEqual(2, eventset.Events.Count);
-            Assert.IsTrue(eventset.Events.Any(e => @event1==e.Event));
-            Assert.IsTrue(eventset.Events.Any(e => @event2==e.Event));
+            Assert.IsTrue(eventset.Events.Any(e => Equals(@event1, e.Event)));
+            Assert.IsTrue(eventset.Events.Any(e => Equals(@event2, e.Event)));
         }
 
         [TestMethod]
@@ -207,8 +230,8 @@ namespace Billmorro.Tests.Infrastruktur
             var eventset = history.Single();
             Assert.AreEqual(1, eventset.Id);
             Assert.AreEqual(2, eventset.Events.Count);
-            Assert.IsTrue(eventset.Events.Any(e => @event1 == e.Event && e.Stream == stream1));
-            Assert.IsTrue(eventset.Events.Any(e => @event2 == e.Event && e.Stream == stream2));
+            Assert.IsTrue(eventset.Events.Any(e => Equals(@event1, e.Event) && e.Stream == stream1));
+            Assert.IsTrue(eventset.Events.Any(e => Equals(@event2, e.Event) && e.Stream == stream2));
         }
 
 
@@ -227,8 +250,8 @@ namespace Billmorro.Tests.Infrastruktur
 
             var historie = Historie_per_Stream(stream1).ToList();
             Assert.AreEqual(2, historie.Count());
-            Assert.IsTrue(historie.Any(e => @event1 == e.Event && e.Stream == stream1));
-            Assert.IsTrue(historie.Any(e => @event3 == e.Event && e.Stream == stream1));
+            Assert.IsTrue(historie.Any(e => Equals(@event1, e.Event) && e.Stream == stream1));
+            Assert.IsTrue(historie.Any(e => Equals(@event3, e.Event) && e.Stream == stream1));
         }
 
         [TestMethod]
@@ -269,7 +292,7 @@ namespace Billmorro.Tests.Infrastruktur
 
         protected abstract void Cleanup_SUT();
     }
-
+    /*
     public struct TestEvent_Struct : Event
     {
         public TestEvent_Struct(string payload)
@@ -293,7 +316,7 @@ namespace Billmorro.Tests.Infrastruktur
 
         public readonly string Payload;
     }
-
+    */
     public class TestEvent_Class_Property : Event
     {
         public TestEvent_Class_Property()
@@ -306,5 +329,27 @@ namespace Billmorro.Tests.Infrastruktur
         }
 
         public string Payload { get; set; }
-    }*/
+
+        public override int GetHashCode()
+        {
+            return Payload?.GetHashCode()??0;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var that = obj as TestEvent_Class_Property;
+            if (Object.ReferenceEquals(that, null)) return false;
+            return that.Payload == Payload;
+        }
+
+        public static bool operator ==(TestEvent_Class_Property that, Event other)
+        {
+            return that?.Equals(other) ?? false;
+        }
+
+        public static bool operator !=(TestEvent_Class_Property that, Event other)
+        {
+            return !(that==other);
+        }
+    }
 }

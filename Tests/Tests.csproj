@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BillMorro\Billmorro.csproj" />
+    <ProjectReference Include="..\Billmorro\Billmorro.csproj" />
     <ProjectReference Include="..\Infrastruktur.Sqlite\Infrastruktur.Sqlite.csproj" />
     <ProjectReference Include="..\Infrastruktur\Infrastruktur.csproj" />
   </ItemGroup>

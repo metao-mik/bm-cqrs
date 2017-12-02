@@ -1,0 +1,20 @@
+{
+  "name": "billmorro-ui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "dotnetify": "^2.0.8-beta",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-scripts": "1.0.17"
+  },
+  "scripts": {
+    "start": "concurrently \"react-scripts start\" \"dotnet watch run\" --kill-others",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.1"
+  }
+}

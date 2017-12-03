@@ -15,16 +15,28 @@ namespace billmorro_ui
          services.AddMemoryCache();
          services.AddSignalR();
          services.AddDotNetify();
+         services.AddSingleton<Billmorro.Infrastruktur.CommandSide.CommandHandler, Billmorro.Implementierung.VerkaufCommandHandler>();
+         services.AddSingleton<Billmorro.Implementierung.VerkaufQuery>();
+         services.AddSingleton<System.Action<System.Exception>>(ex=>throw new System.Exception("Fehler",ex));
+         services.AddSingleton<System.Func<System.DateTime>>(()=>System.DateTime.UtcNow);
+         services.AddSingleton<Billmorro.Infrastruktur.Eventsourcing.EventStore, Billmorro.Infrastruktur.Implementierung.InMemoryEventStore>();
+         services.AddSingleton<Billmorro.ModulApi.Geraete.Geraetemodul>();
+         services.AddSingleton<Billmorro.ModulApi.Produkte.Produktmodul>();
+         services.AddSingleton<Billmorro.ClientApi.Kasse.KasseQueryApi>();
+         services.AddSingleton<Billmorro.ClientApi.Kasse.KasseClientApi>();
       }
       public void Configure(IApplicationBuilder app)
       {
          app.UseCors(builder => builder.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader());   
          app.UseWebSockets();
          app.UseSignalR(routes => routes.MapDotNetifyHub());
+       
          app.UseDotNetify();
+
          app.Run(async (context) =>
          {
-            await context.Response.WriteAsync("HelloWorld server");
+             System.Console.WriteLine(context.Request.Path.Value);
+              await context.Response.WriteAsync("HelloWorld server");
          });
       }
    }

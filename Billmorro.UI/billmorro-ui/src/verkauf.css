@@ -1,0 +1,85 @@
+div.verkauf {
+  display: flex;
+}
+
+div.verkauf div.bon { 
+  width:300px; 
+  background:#CCCCCC; 
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+div.verkauf div.eingabe { 
+  width:210px; 
+  background:#EEEEEE;  
+}
+
+div.verkauf div.artikelliste { 
+  width:300px; 
+  background: #CCCCCC; 
+}
+
+div.tastenfeld {
+  display:flex;
+  flex-wrap: wrap;
+}
+
+div.anzeige {
+  width:210px;
+  height:50px;
+  font-size: 20px;
+  display:flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+div.anzeige span { margin-right:10px; }
+
+input.taste_zahl {
+  width:70px;
+  height:70px;
+  font-size: 20px;
+  background: transparent;
+  border:1px #CCCCCC solid;
+}
+
+div.bonpositionen {
+  font-size:16px;
+  width:210px;
+}
+
+div.bonpositionen td {
+  font-size:14px;
+  font-weight:normal;
+  text-align: right;
+}
+
+div.bonpositionen td.text {
+  font-weight:normal;
+  text-align: left;
+}
+
+div.bonfuss {
+  font-size:16px;
+  width:210px;
+}
+
+div.bonfuss table{
+  width:210px;
+}
+
+div.bonfuss td {
+  font-size:14px;
+  font-weight:normal;
+  text-align: right;
+  width:50px;
+}
+
+div.bonfuss td.label {
+  font-size:14px;
+  font-weight:bold;
+  text-align: left;
+  width:160px; 
+  
+}

@@ -13,6 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Billmorro\Billmorro.csproj" />
+    <ProjectReference Include="..\..\Infrastruktur.Sqlite\Infrastruktur.Sqlite.csproj" />
+    <ProjectReference Include="..\..\Infrastruktur\Infrastruktur.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetify.SignalR" Version="2.2.2-pre" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.0.1" />

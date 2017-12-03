@@ -27,6 +27,7 @@ namespace Billmorro.ClientApi.Kasse
         {
             return new Bonposition
             {
+                Id = src.Id,
                 Bezeichnung = src.Artikel.ToString(),
                 Menge = src.Menge,
                 Positionspreis = src.Positionspreis,
@@ -40,13 +41,15 @@ namespace Billmorro.ClientApi.Kasse
             {
                 NettoBetrag = src.NettoBetrag,
                 BruttoBetrag = src.BruttoBetrag,
-                Positionen = src.Positionen.Select(Map).ToList()
+                Positionen = src.Positionen.Select(Map).ToList(),
+                Steuersatz1Name="19%",
+                Steuersatz2Name="7%"
             };
         }
 
         private Bon LeererBon => new Bon{ Positionen = new List<Bonposition>()};
 
-        private readonly Subject<Bon> _aktuellerBon = new Subject<Bon>();
+        private readonly Subject<Bon> _aktuellerBon = new Subject<Bon>(true);
         public IObservable<Bon> AktuellerBon => _aktuellerBon;
     }
 
@@ -63,6 +66,7 @@ namespace Billmorro.ClientApi.Kasse
 
     public class Bonposition
     {
+        public Guid Id {get;set;}
         public int Menge { get; set; }
         public string Bezeichnung { get; set; }
         public decimal Positionspreis { get; set; }

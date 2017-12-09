@@ -1,16 +1,16 @@
 import React from 'react';
 import dotnetify from 'dotnetify';
-import './verkauf.css';
+import './kasse.css';
 
 dotnetify.hubServerUrl = "http://localhost:5000";
 
 const MODE_EAN_oder_PREIS = 0;
 const MODE_PREIS = 2;
 
-class Verkauf extends React.Component {
+class Kasse extends React.Component {
     constructor(props) {
         super(props);
-        this.vm = dotnetify.react.connect("VerkaufVM", this);
+        this.vm = dotnetify.react.connect("KasseVM", this);
         this.state = {
             mode:MODE_EAN_oder_PREIS,
             ean_preis_euro:"",
@@ -45,7 +45,21 @@ class Verkauf extends React.Component {
                 break;
         }
     }
-    taste_bksp(){}
+    taste_bksp(){
+      if (this.state.mode===MODE_PREIS){
+        if (this.state.preis_cent.length===0) {
+          this.setState({mode:MODE_EAN_oder_PREIS});
+        } else {
+          const preis = this.state.preis_cent.substr(0,this.state.preis_cent.length-1)
+          this.setState({preis_cent:preis});
+        }
+      } else {
+        if (this.state.ean_preis_euro.length>0){
+          const preis = this.state.ean_preis_euro.substr(0,this.state.ean_preis_euro.length-1)
+          this.setState({ean_preis_euro:preis});
+        }
+      }
+    }
     taste_ean(){
         this.vm.$dispatch({Barcode_hinzufuegen:this.state.ean_preis_euro});
     }
@@ -118,4 +132,4 @@ class Verkauf extends React.Component {
     }
 }
 
-export default Verkauf;
+export default Kasse;

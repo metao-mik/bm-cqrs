@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import Verkauf from './Verkauf';
+import Kasse from './Kasse';
 
 class App extends Component {
   render() {
@@ -10,7 +10,7 @@ class App extends Component {
           <img src="billmorro.png" className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header> */}
-        <Verkauf />
+        <Kasse />
       </div>
     );
   }

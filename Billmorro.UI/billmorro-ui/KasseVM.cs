@@ -22,7 +22,7 @@ namespace billmorro_ui
         public string Positionspreis => _src.Positionspreis.ToString("0.00",VerkaufVM.ci);
         public string Steuersatz => _src.Steuersatz;
     }
-    public class VerkaufVM : BaseVM
+    public class KasseVM : BaseVM
     {
 
         public static CultureInfo ci = new CultureInfo("de-DE");
@@ -40,7 +40,7 @@ namespace billmorro_ui
         private Billmorro.ClientApi.Kasse.Bon _aktuellerBon;
         private KasseClientApi _api;
 
-        public VerkaufVM(Billmorro.ClientApi.Kasse.KasseClientApi api, Billmorro.ClientApi.Kasse.KasseQueryApi query){
+        public KasseVM(Billmorro.ClientApi.Kasse.KasseClientApi api, Billmorro.ClientApi.Kasse.KasseQueryApi query){
             _api = api;
 
             _unsubscribe = query.AktuellerBon.Subscribe(bon=>{
@@ -56,6 +56,5 @@ namespace billmorro_ui
         private IDisposable _unsubscribe;
 
         public Action<string> Barcode_hinzufuegen => barcode => _api.Hinzufuegen_Barcode(barcode);
-
     }
 }

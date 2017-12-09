@@ -27,10 +27,10 @@ namespace billmorro_ui
       }
       public void Configure(IApplicationBuilder app)
       {
-         app.UseCors(builder => builder.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader());   
+         app.UseCors(builder => builder.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader());
          app.UseWebSockets();
          app.UseSignalR(routes => routes.MapDotNetifyHub());
-       
+
          app.UseDotNetify();
 
          app.Run(async (context) =>

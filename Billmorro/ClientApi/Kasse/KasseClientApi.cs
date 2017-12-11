@@ -24,9 +24,10 @@ namespace Billmorro.ClientApi.Kasse
         public void Hinzufuegen_Barcode(string barcode)
         {
             var artikelId_opt = _produkte.Artikel_zu_Barcode_suchen(barcode);
+
             if (artikelId_opt.HasValue)
             {
-                Hinzufuegen_Position(artikelId_opt.Value, 1, 0m);
+                Hinzufuegen_Position(artikelId_opt.Value, 1, null);
             }
             else
             {
@@ -34,10 +35,11 @@ namespace Billmorro.ClientApi.Kasse
             }
         }
 
-        public void Hinzufuegen_Position(ArtikelId artikel, int menge, decimal preis)
+        public void Hinzufuegen_Position(ArtikelId artikel, int menge, decimal? preis)
         {
             var bonId = _geraet.Aktueller_oder_neuer_Bon();
-            var cmd = new Position_zu_Bon_hinzufuegen(bonId, PositionId.Neu, artikel, 1, 0m);
+            var betrag = preis ?? _produkte.Artikel(artikel)?.Einzelpreis ?? 0m;
+            var cmd = new Position_zu_Bon_hinzufuegen(bonId, PositionId.Neu, artikel, menge, betrag);
             _verkauf.Execute(cmd);
         }
     }

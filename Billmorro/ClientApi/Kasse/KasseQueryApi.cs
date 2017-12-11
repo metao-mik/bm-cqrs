@@ -5,13 +5,18 @@ using Billmorro.Implementierung;
 using Billmorro.Infrastruktur.Reactive;
 using Billmorro.ModulApi.Geraete;
 using Billmorro.Schema.Verkauf;
+using Billmorro.ModulApi.Produkte;
 
 namespace Billmorro.ClientApi.Kasse
 {
     public class KasseQueryApi
     {
-        public KasseQueryApi(VerkaufQuery verkaufreadmodel, Geraetemodul geraete)
+
+        private readonly Produktmodul _produkte;
+        public KasseQueryApi(VerkaufQuery verkaufreadmodel, Geraetemodul geraete, Produktmodul produkte)
         {
+          _produkte = produkte;
+
             verkaufreadmodel.Changes.Subscribe(_ =>
             {
                 var bonid = geraete.Aktueller_Bon;
@@ -28,7 +33,7 @@ namespace Billmorro.ClientApi.Kasse
             return new Bonposition
             {
                 Id = src.Id,
-                Bezeichnung = src.Artikel.ToString(),
+                Bezeichnung = _produkte.Artikel(src.Artikel)?.Bezeichnung ?? src.Artikel.ToString(),
                 Menge = src.Menge,
                 Positionspreis = src.Positionspreis,
                 Steuersatz = "19%"
@@ -52,12 +57,7 @@ namespace Billmorro.ClientApi.Kasse
         private readonly Subject<Bon> _aktuellerBon = new Subject<Bon>(true);
         public IObservable<Bon> AktuellerBon => _aktuellerBon;
 
-        public List<Artikel> GetArtikelliste(){
-          return  new List<Artikel>{
-            new Artikel { Id = (Billmorro.Schema.Produkte.ArtikelId) new Guid("63272925-62CD-0EFD-A4ED-8698A9C5B297"), Bezeichnung = "Orbit zuckerfrei 5er Gebinde", Einzelpreis = 3.95m  },
-            new Artikel { Id = (Billmorro.Schema.Produkte.ArtikelId) new Guid("17435282-62CD-0EFD-A4ED-8698A9C5B298"), Bezeichnung = "Orbit zuckerfrei Einzel", Einzelpreis = 0.99m  }
-          };
-        }
+        public List<Artikel> GetArtikelliste() => _produkte.Gesamtliste().Select(p => new Artikel { Id = p.Id, Bezeichnung = p.Bezeichnung, Einzelpreis = p.Einzelpreis }).ToList();
     }
 
     public class Artikel {

@@ -56,15 +56,17 @@ namespace Billmorro.Tests.UseCases
         {
             var eventstore = new InMemoryEventStore(() => DateTime.UtcNow);
 
+            var produktmodul = new ModulApi.Produkte.Produktmodul();
             var geraete = new Geraetemodul();
+
             _clientapi = new KasseClientApi(
-                new ModulApi.Produkte.Produktmodul(),
+                produktmodul,
                 geraete,
                     new VerkaufCommandHandler(eventstore,
                         ex => { throw new Exception("Fehler in Testausführung: " + ex.Message, ex); })
                 );
 
-            _queryapi = new KasseQueryApi(new VerkaufQuery(eventstore), geraete);
+            _queryapi = new KasseQueryApi(new VerkaufQuery(eventstore), geraete, produktmodul);
 
             _aktuellerBon = null;
             _queryapi.AktuellerBon.Subscribe(bon => _aktuellerBon = bon);

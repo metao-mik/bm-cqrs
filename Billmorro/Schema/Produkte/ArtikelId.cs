@@ -21,11 +21,26 @@ namespace Billmorro.Schema.Produkte
             return new ArtikelId(that);
         }
 
+        public static explicit operator ArtikelId(string valid_guid)
+        {
+            return new ArtikelId(new Guid(valid_guid));
+        }
+
         public override string ToString()
         {
             return $"Artikel-{Id}";
         }
 
         public static ArtikelId Neu => new ArtikelId(Guid.NewGuid());
+
+        public static bool operator ==(ArtikelId lhs, ArtikelId rhs)
+        {
+          return lhs.Equals(rhs);
+        }
+
+        public static bool operator !=(ArtikelId lhs, ArtikelId rhs)
+        {
+          return !(lhs==rhs);
+        }
     }
 }

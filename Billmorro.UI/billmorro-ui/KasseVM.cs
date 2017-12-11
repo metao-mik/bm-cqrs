@@ -5,72 +5,51 @@ using System.Collections.Generic;
 using System.Linq;
 using DotNetify;
 using Billmorro.Infrastruktur.Reactive;
+using Billmorro.Schema.Produkte;
 
 using Billmorro.ClientApi.Kasse;
 
 namespace billmorro_ui
 {
 
-    public class BonPositionVM {
-        public BonPositionVM(Bonposition src){
-            _src=src;
-        }
-        private readonly Bonposition _src;
-        public string Bezeichnung => _src.Bezeichnung;
-        public string Id => _src.Id.ToString();
-        public string Menge => _src.Menge.ToString();
-        public string Positionspreis => _src.Positionspreis.ToString("0.00",KasseVM.ci);
-        public string Steuersatz => _src.Steuersatz;
+  public static class UI
+  {
+    private static CultureInfo _ci = new CultureInfo("de-DE");
+    public static string FormatBetrag(decimal betrag) => betrag.ToString("0.00", _ci);
+
+    public static string Format(this decimal betrag) => FormatBetrag(betrag);
+  }
+
+  public class KasseVM : BaseVM
+  {
+    private readonly Billmorro.ClientApi.Kasse.KasseClientApi _api;
+    public KasseVM(Billmorro.ClientApi.Kasse.KasseClientApi api, Billmorro.ClientApi.Kasse.KasseQueryApi query){
+      _api = api;
     }
 
-    public class ArtikelVM {
-      public ArtikelVM(Artikel src){
-        _src = src;
-      }
-      private readonly Artikel _src;
-      public string Id => _src.Id.ToString();
-      public string Bezeichnung => _src.Bezeichnung;
-      public string EinzelpreisText => _src.Einzelpreis.ToString("0.00",KasseVM.ci);
+    public override void OnSubVMCreated(BaseVM vm) {
+      if (vm is BonVM) InitBonVM((BonVM)vm);
+      if (vm is TouchpadVM) InitTouchpadVM((TouchpadVM)vm);
+      if (vm is ArtikellisteVM) InitArtikellisteVM((ArtikellisteVM)vm);
     }
 
-    public class KasseVM : BaseVM
-    {
+    private TouchpadVM _touchpad;
 
-        public static CultureInfo ci = new CultureInfo("de-DE");
+    private void InitBonVM(BonVM vm) {
 
-        public string NettoBetrag => _aktuellerBon?.NettoBetrag.ToString("0.00",ci)??"";
-        public string BruttoBetrag => _aktuellerBon?.BruttoBetrag.ToString("0.00",ci)??"";
-        public string PositionenZahl => _aktuellerBon?.Positionen?.Count.ToString()??"";
-        public string Steuersatz1 => _aktuellerBon?.Steuersatz1.ToString("0.00",ci)??"";
-        public string Steuersatz2 => _aktuellerBon?.Steuersatz2.ToString("0.00",ci)??"";
-        public string Steuersatz1Name => _aktuellerBon?.Steuersatz1Name??"";
-        public string Steuersatz2Name => _aktuellerBon?.Steuersatz2Name??"";
-
-        public List<BonPositionVM> Positionen => _aktuellerBon?.Positionen.Select(p=>new BonPositionVM(p)).ToList()??new List<BonPositionVM>();
-        private List<ArtikelVM> _artikelliste;
-        public List<ArtikelVM> Artikelliste => _artikelliste;
-
-        public Billmorro.ClientApi.Kasse.Bon AktuellerBon => _aktuellerBon;
-        private Billmorro.ClientApi.Kasse.Bon _aktuellerBon;
-        private KasseClientApi _api;
-
-        public KasseVM(Billmorro.ClientApi.Kasse.KasseClientApi api, Billmorro.ClientApi.Kasse.KasseQueryApi query){
-            _api = api;
-
-            _artikelliste = query.GetArtikelliste().Select(a=> new ArtikelVM(a)).ToList();
-
-            _unsubscribe = query.AktuellerBon.Subscribe(bon=>{
-                _aktuellerBon = bon;
-                Changed(nameof(AktuellerBon));
-                Changed(nameof(NettoBetrag));
-                Changed(nameof(PositionenZahl));
-                Changed(nameof(Positionen));
-                PushUpdates();
-            });
-        }
-
-        private IDisposable _unsubscribe;
-
-        public Action<string> Barcode_hinzufuegen => barcode => _api.Hinzufuegen_Barcode(barcode);
     }
+
+    private void InitTouchpadVM(TouchpadVM vm) {
+      _touchpad = vm;
+      vm.Barcode_hinzufuegen += (_,barcode) => _api.Hinzufuegen_Barcode(barcode);
+    }
+
+    private void InitArtikellisteVM(ArtikellisteVM vm) {
+      vm.ArtikelGewaehlt += (_,artikel) => {
+        var menge = System.Math.Max(1, _touchpad?.Menge??0);
+        _api.Hinzufuegen_Position(artikel, menge, null);
+        _touchpad?.Reset();
+      };
+    }
+  }
 }

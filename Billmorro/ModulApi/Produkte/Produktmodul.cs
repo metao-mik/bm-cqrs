@@ -7,7 +7,7 @@ namespace Billmorro.ModulApi.Produkte
     public class Produktmodul
     {
       public ArtikelId? Artikel_zu_Barcode_suchen(string barcode) =>
-        _artikelstamm.Where(_=>_.Barcode==barcode).Select(_=>_.Id).SingleOrDefault();
+        _artikelstamm.Where(_=>_.Barcode==barcode).Select(_=>(ArtikelId?)_.Id).SingleOrDefault();
 
       public ArtikelInfo? Artikel(ArtikelId id) =>
         _artikelstamm.Where(_=>_.Id==id).SingleOrDefault();

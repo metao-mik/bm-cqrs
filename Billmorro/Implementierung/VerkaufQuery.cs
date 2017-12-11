@@ -35,10 +35,12 @@ namespace Billmorro.Implementierung
         }
     }
 
+  
+
     public class BonReadmodel
     {
         public List<Bonposition> Positionen { get; set; }
         public decimal NettoBetrag { get; set; }
         public decimal BruttoBetrag { get; set; }
-    }    
+    }
 }

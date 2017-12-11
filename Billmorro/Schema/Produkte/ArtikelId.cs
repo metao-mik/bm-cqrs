@@ -16,6 +16,11 @@ namespace Billmorro.Schema.Produkte
             return that.Id;
         }
 
+        public static explicit operator ArtikelId(Guid that)
+        {
+            return new ArtikelId(that);
+        }
+
         public override string ToString()
         {
             return $"Artikel-{Id}";

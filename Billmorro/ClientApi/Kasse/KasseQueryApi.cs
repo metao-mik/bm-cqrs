@@ -51,6 +51,19 @@ namespace Billmorro.ClientApi.Kasse
 
         private readonly Subject<Bon> _aktuellerBon = new Subject<Bon>(true);
         public IObservable<Bon> AktuellerBon => _aktuellerBon;
+
+        public List<Artikel> GetArtikelliste(){
+          return  new List<Artikel>{
+            new Artikel { Id = (Billmorro.Schema.Produkte.ArtikelId) new Guid("63272925-62CD-0EFD-A4ED-8698A9C5B297"), Bezeichnung = "Orbit zuckerfrei 5er Gebinde", Einzelpreis = 3.95m  },
+            new Artikel { Id = (Billmorro.Schema.Produkte.ArtikelId) new Guid("17435282-62CD-0EFD-A4ED-8698A9C5B298"), Bezeichnung = "Orbit zuckerfrei Einzel", Einzelpreis = 0.99m  }
+          };
+        }
+    }
+
+    public class Artikel {
+      public Billmorro.Schema.Produkte.ArtikelId Id {get;set;}
+      public string Bezeichnung {get;set;}
+      public decimal Einzelpreis {get;set;}
     }
 
     public class Bon

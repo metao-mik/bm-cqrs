@@ -13,7 +13,7 @@ class Kasse extends React.Component {
         this.vm = dotnetify.react.connect("KasseVM", this);
         this.state = {
             mode:MODE_EAN_oder_PREIS,
-            ean_preis_euro:"",
+            ean_preis_euro_menge:"",
             preis_cent:"",
             AktuellerBon:null,
             Steuersatz1:"",
@@ -31,11 +31,11 @@ class Kasse extends React.Component {
             default:break;
             case MODE_EAN_oder_PREIS:
                 if (code===","){
-                    if (this.state.ean_preis_euro==="") this.setState({ean_preis_euro:"0"});
+                    if (this.state.ean_preis_euro_menge==="") this.setState({ean_preis_euro_menge:"0"});
                     this.setState({mode:MODE_PREIS});
                 }
                 else {
-                    this.setState({ean_preis_euro:this.state.ean_preis_euro+code});
+                    this.setState({ean_preis_euro_menge:this.state.ean_preis_euro_menge+code});
                 }
                 break;
             case MODE_PREIS:
@@ -45,6 +45,7 @@ class Kasse extends React.Component {
                 break;
         }
     }
+
     taste_bksp(){
       if (this.state.mode===MODE_PREIS){
         if (this.state.preis_cent.length===0) {
@@ -54,24 +55,36 @@ class Kasse extends React.Component {
           this.setState({preis_cent:preis});
         }
       } else {
-        if (this.state.ean_preis_euro.length>0){
-          const preis = this.state.ean_preis_euro.substr(0,this.state.ean_preis_euro.length-1)
-          this.setState({ean_preis_euro:preis});
+        if (this.state.ean_preis_euro_menge.length>0){
+          const preis = this.state.ean_preis_euro_menge.substr(0,this.state.ean_preis_euro_menge.length-1)
+          this.setState({ean_preis_euro_menge:preis});
         }
       }
     }
+
+    artikelClick(id){
+      const menge = this.state.ean_preis_euro_menge;
+      this.vm.$dispatch({Artikel_hinzufuegen:id});
+      this.resetKeypad();
+    }
+
     taste_ean(){
-        this.vm.$dispatch({Barcode_hinzufuegen:this.state.ean_preis_euro});
+      this.vm.$dispatch({Barcode_hinzufuegen:this.state.ean_preis_euro_menge});
+      this.resetKeypad();
     }
     taste_bar(){}
     taste_pos(){}
 
+    resetKeypad(){
+      this.setState({ean_preis_euro_menge:"",preis_cent:"",mode:MODE_EAN_oder_PREIS});
+    }
+
     render_display(){
         if (this.state.mode===MODE_EAN_oder_PREIS){
-            if (this.state.ean_preis_euro ==="") return "|";
-            return this.state.ean_preis_euro;
+            if (this.state.ean_preis_euro_menge ==="") return "|";
+            return this.state.ean_preis_euro_menge;
         } else {
-            return this.state.ean_preis_euro+","+this.state.preis_cent;
+            return this.state.ean_preis_euro_menge+","+this.state.preis_cent;
         }
     }
 
@@ -84,6 +97,26 @@ class Kasse extends React.Component {
           <tr key={"TR-A-"+pos.Id}><td className="text" colSpan="4" >{pos.Bezeichnung}</td></tr>,
           <tr key={"TR-B-"+pos.Id}><td></td><td>{pos.Menge}</td><td>{pos.Steuersatz}</td><td>{pos.Positionspreis}</td></tr>
         ]);
+    }
+
+    render_artikel(art){
+      return ([
+        <tr key={"TR-A-"+art.Id} onClick={()=>this.artikelClick(art.Id)}><td className="text" colSpan="2" >{art.Bezeichnung}</td></tr>,
+        <tr key={"TR-B-"+art.Id}  onClick={()=>this.artikelClick(art.Id)}><td></td><td>{art.EinzelpreisText}</td></tr>
+      ]);
+  }
+
+    render_artikelliste(){
+      if (!this.state.Artikelliste){
+        return <div className="artikelliste">- Artikelliste wird geladen -</div>;
+      }
+      return <div className="artikelliste">
+                  <table>
+                      <tbody>
+                          {this.state.Artikelliste.map(a=>this.render_artikel(a))}
+                      </tbody>
+                      </table>
+      </div>;
     }
 
     render_bon(){
@@ -121,12 +154,12 @@ class Kasse extends React.Component {
             <div className="tastenfeld">
             {["1","2","3","4","5","6","7","8","9",",","0"].map(x=>this.render_taste(x))}
             <input type="button" className="taste_zahl" value="<-"  onClick={()=>this.taste_bksp()}></input>
-            <input disabled={this.state.mode===MODE_PREIS || this.state.ean_preis_euro.length<5}  type="button" className="taste_zahl" value="EAN"  onClick={()=>this.taste_ean()}></input>
+            <input disabled={this.state.mode===MODE_PREIS || this.state.ean_preis_euro_menge.length<5}  type="button" className="taste_zahl" value="EAN"  onClick={()=>this.taste_ean()}></input>
             <input type="button" className="taste_zahl" value="BAR"  onClick={()=>this.taste_bar()}></input>
             <input type="button" className="taste_zahl" value="POS"  onClick={()=>this.taste_pos()}></input>
             </div>
             </div>
-            <div className="artikelliste">Artikelliste</div>
+            {this.render_artikelliste()}
             </div>
         );
     }

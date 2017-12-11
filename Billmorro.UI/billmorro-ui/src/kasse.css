@@ -16,8 +16,8 @@ div.verkauf div.eingabe {
 }
 
 div.verkauf div.artikelliste { 
-  width:300px; 
-  background: #CCCCCC; 
+  width:300px;
+  background: #CCCCCC;
 }
 
 div.tastenfeld {
@@ -53,6 +53,7 @@ div.bonpositionen td {
   font-size:14px;
   font-weight:normal;
   text-align: right;
+  width:210px;
 }
 
 div.bonpositionen td.text {
@@ -80,6 +81,18 @@ div.bonfuss td.label {
   font-size:14px;
   font-weight:bold;
   text-align: left;
-  width:160px; 
-  
+  width:160px;
+
+}
+
+div.artikelliste td {
+  font-size:14px;
+  font-weight:normal;
+  text-align: right;
+  width:210px;
+}
+
+div.artikelliste td.text {
+  font-weight:normal;
+  text-align: left;
 }

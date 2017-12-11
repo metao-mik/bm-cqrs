@@ -16,6 +16,11 @@ namespace Billmorro.Schema.Verkauf
             return that.Id;
         }
 
+        public static explicit operator BonId(Guid that)
+        {
+            return new BonId(that);
+        }
+
         public override string ToString()
         {
             return $"Bon-{Id}";
